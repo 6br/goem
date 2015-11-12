@@ -72,7 +72,17 @@ func (em EM) m() {
 
 	for k := 0; k < em.k; k++ {
 		biasedMu := make([]float64, em.d)
+		for n := 0; n < len(em.data); n++ {
+			biasedMu += em.w[n][k] * em.data[n]
+		}
+		em.mu[k] = biasedMu / sumW[k]
 
+		biasedSigma := 0.0
+		for n := 0; n < len(em.data); n++ {
+			biasedSigma += em.w[n][k] * math.Pow(em.data[n]-em.mu[k], 2)
+		}
+		em.sigma = biasedSigma / sumW[k]
+		em.pi[k] = sumW[k] / float64(len(em.data))
 	}
 }
 
