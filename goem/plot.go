@@ -15,7 +15,7 @@ func (em EM) Plot(fileid int) {
 	if err != nil {
 		panic(err)
 	}
-	p.Title.Text = "EM Algorithm Plot"
+	p.Title.Text = "EM-Algorithm Plot"
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
 	bs, err := plotter.NewBubbles(em.clusterTriples(), vg.Points(30), vg.Points(80))
@@ -54,6 +54,5 @@ func (em EM) clusterTriples() plotter.XYZs {
 		data[i].Y = v[1]
 		data[i].Z = em.pi[i] * 10
 	}
-
 	return data
 }
