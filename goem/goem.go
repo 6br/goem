@@ -63,7 +63,7 @@ func (em EM) norm(x []float64, j int) float64 {
 	second := mat64.DenseCopyOf(first.T())
 	resultMat := mat64.NewDense(1, 1, nil)
 	resultMat.Mul(first, second)
-	//fmt.Println(resultMat.At(0, 0))
+
 	var jisuu = 0.5 * float64(em.d)
 	return math.Exp(resultMat.At(0, 0)/(-2.0)/(em.sigma[j]*em.sigma[j])) / math.Pow(2*math.Pi*em.sigma[j]*em.sigma[j], jisuu)
 }
@@ -87,9 +87,8 @@ func (em EM) m() {
 		for n := 0; n < len(em.data); n++ {
 			sumW[k] += em.w[n][k]
 		}
-
 	}
-	fmt.Println(sumW)
+
 	for k := 0; k < em.k; k++ {
 		biasedMu := make([]float64, em.d)
 		for n := 0; n < len(em.data); n++ {
@@ -108,7 +107,6 @@ func (em EM) m() {
 		em.sigma[k] = math.Sqrt(biasedSigma / sumW[k] / float64(em.d))
 		em.pi[k] = sumW[k] / float64(len(em.data))
 	}
-	fmt.Println(em.pi)
 }
 
 func (em EM) show() {
@@ -117,6 +115,7 @@ func (em EM) show() {
 		fmt.Println("mu", i, ": ", em.mu[i])
 		fmt.Println("sigma", i, ": ", em.sigma[i])
 	}
+	fmt.Println("loglikelyhood: ", em.likelyhood())
 }
 
 func arraySubInnerProduct(a []float64, b []float64) (result float64) {
@@ -128,20 +127,20 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 }
 
 func (em EM) emIter(times int, loglikelyhood float64) {
+	like := em.likelyhood()
 	for i := 0; i < times; i++ {
 		em.e()
 		em.m()
-		em.show()
-		fmt.Println("Likelyhood: ", em.likelyhood())
-		if math.IsNaN(em.likelyhood()) {
+		newlike := em.likelyhood()
+		if math.IsNaN(em.likelyhood()) || math.Abs(newlike-like) < loglikelyhood {
 			break
 		}
+		like = newlike
 	}
+	em.show()
 }
 
-//Please take a log.
 func (em EM) likelyhood() (result float64) {
-	result = 0
 	for _, d := range em.data {
 		temp := 0.0
 		for k, v := range em.pi {
@@ -154,14 +153,7 @@ func (em EM) likelyhood() (result float64) {
 
 func main() {
 	//mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
-	x := []float64{1, 2}
 	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
 	a := NewEM(1.0, 3, data)
-	fmt.Println(a.mu)
-	fmt.Println(a.norm(x, 0))
-	a.show()
-	a.e()
-	a.m()
-	a.show()
-	a.emIter(5, 0.00001)
+	a.emIter(5, 0.01)
 }
