@@ -9,7 +9,7 @@ import (
 //EM is EM-algorithm class.
 type EM struct {
 	mu    [][]float64
-	sigma float64
+	sigma []float64
 	d     int
 	k     int
 	w     [][]float64
@@ -18,12 +18,11 @@ type EM struct {
 }
 
 //NewEM is initializer of struct EM.
-func NewEM(sigma float64, cluster int, data [][]float64) *EM {
+func NewEM(sig float64, cluster int, data [][]float64) *EM {
 	w := make([][]float64, len(data))
 	for i := 0; i < len(data); i++ {
 		w[i] = make([]float64, cluster)
 	}
-	//pi := []float64{0.3, 0.3, 0.3}
 	pi := make([]float64, cluster) //stub.
 	for i := range pi {
 		pi[i] = 1.0 / float64(cluster)
@@ -32,23 +31,28 @@ func NewEM(sigma float64, cluster int, data [][]float64) *EM {
 	for i := 0; i < cluster; i++ {
 		mu[i] = make([]float64, len(data[0]))
 	}
+	sigma := make([]float64, cluster)
+	for i := range sigma {
+		sigma[i] = sig
+	}
 	EM := &EM{mu: mu, sigma: sigma, d: len(data[0]), k: cluster, data: data, pi: pi, w: w}
 	EM.muInitAsBiasedMean(0.1)
-	fmt.Println(EM.mu)
 	return EM
 }
 
-func (em EM) muInitAsBiasedMean(biase int) {
+func (em EM) muInitAsBiasedMean(biase float64) {
 	//em.mu = make([][]float64, em.k)
+	mu := make([]float64, em.d)
 	for i := 0; i < em.k; i++ {
-		em.mu[i] = em.data[i]
 		for d := 0; d < em.d; d++ {
-			em.mu[i][d] = em.mu[i][d] / float64(em.k) * float64(1.0+(i-em.k)*biase)
+			mu[d] += em.data[i][d]
 		}
 	}
-
-	//em.mu = mu
-
+	for i := 0; i < em.k; i++ {
+		for d := 0; d < em.d; d++ {
+			em.mu[i][d] = mu[d] / float64(em.k) * (1.0 + float64(i-em.k/2.0)*biase)
+		}
+	}
 }
 
 func (em EM) norm(x []float64, j int) float64 {
@@ -61,7 +65,7 @@ func (em EM) norm(x []float64, j int) float64 {
 	resultMat.Mul(first, second)
 	//fmt.Println(resultMat.At(0, 0))
 	var jisuu = 0.5 * float64(em.d)
-	return math.Exp(resultMat.At(0, 0)/(-2.0)/(em.sigma*em.sigma)) / math.Pow(2*math.Pi*em.sigma*em.sigma, jisuu)
+	return math.Exp(resultMat.At(0, 0)/(-2.0)/(em.sigma[j]*em.sigma[j])) / math.Pow(2*math.Pi*em.sigma[j]*em.sigma[j], jisuu)
 }
 
 func (em EM) e() {
@@ -71,7 +75,7 @@ func (em EM) e() {
 			for j := 0; j < em.k; j++ {
 				tmp += em.pi[j] * em.norm(em.data[n], j)
 			}
-			em.w[n][k] = em.pi[k] * em.norm(em.data[n], k)
+			em.w[n][k] = em.pi[k] * em.norm(em.data[n], k) / tmp
 		}
 	}
 }
@@ -83,8 +87,9 @@ func (em EM) m() {
 		for n := 0; n < len(em.data); n++ {
 			sumW[k] += em.w[n][k]
 		}
-	}
 
+	}
+	fmt.Println(sumW)
 	for k := 0; k < em.k; k++ {
 		biasedMu := make([]float64, em.d)
 		for n := 0; n < len(em.data); n++ {
@@ -100,8 +105,17 @@ func (em EM) m() {
 		for n := 0; n < len(em.data); n++ {
 			biasedSigma += em.w[n][k] * math.Pow(arraySubInnerProduct(em.data[n], em.mu[k]), 2)
 		}
-		em.sigma = biasedSigma / sumW[k]
+		em.sigma[k] = math.Sqrt(biasedSigma / sumW[k] / float64(em.d))
 		em.pi[k] = sumW[k] / float64(len(em.data))
+	}
+	fmt.Println(em.pi)
+}
+
+func (em EM) show() {
+	for i := range em.pi {
+		fmt.Println("pi", i, ": ", em.pi[i])
+		fmt.Println("mu", i, ": ", em.mu[i])
+		fmt.Println("sigma", i, ": ", em.sigma[i])
 	}
 }
 
@@ -113,6 +127,31 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 	return
 }
 
+func (em EM) emIter(times int, loglikelyhood float64) {
+	for i := 0; i < times; i++ {
+		em.e()
+		em.m()
+		em.show()
+		fmt.Println("Likelyhood: ", em.likelyhood())
+		if math.IsNaN(em.likelyhood()) {
+			break
+		}
+	}
+}
+
+//Please take a log.
+func (em EM) likelyhood() (result float64) {
+	result = 0
+	for _, d := range em.data {
+		temp := 0.0
+		for k, v := range em.pi {
+			temp += v * em.norm(d, k)
+		}
+		result += math.Log(temp)
+	}
+	return
+}
+
 func main() {
 	//mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
 	x := []float64{1, 2}
@@ -120,6 +159,9 @@ func main() {
 	a := NewEM(1.0, 3, data)
 	fmt.Println(a.mu)
 	fmt.Println(a.norm(x, 0))
+	a.show()
 	a.e()
 	a.m()
+	a.show()
+	a.emIter(5, 0.00001)
 }
