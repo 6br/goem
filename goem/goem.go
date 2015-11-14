@@ -18,12 +18,12 @@ type EM struct {
 }
 
 //NewEM is initializer of struct EM.
-func NewEM(sig float64, cluster int, data [][]float64) *EM {
+func NewEM(sig float64, cluster int, data [][]float64, mean float64) *EM {
 	w := make([][]float64, len(data))
 	for i := 0; i < len(data); i++ {
 		w[i] = make([]float64, cluster)
 	}
-	pi := make([]float64, cluster) //stub.
+	pi := make([]float64, cluster)
 	for i := range pi {
 		pi[i] = 1.0 / float64(cluster)
 	}
@@ -36,8 +36,31 @@ func NewEM(sig float64, cluster int, data [][]float64) *EM {
 		sigma[i] = sig
 	}
 	EM := &EM{mu: mu, sigma: sigma, d: len(data[0]), k: cluster, data: data, pi: pi, w: w}
-	EM.muInitAsBiasedMean(1.0)
+	EM.muInitAsBiasedMean(mean)
 	return EM
+}
+
+func (em EM) recluster(cluster int, sig float64) {
+	w := make([][]float64, len(em.data))
+	for i := 0; i < len(em.data); i++ {
+		w[i] = make([]float64, cluster)
+	}
+	pi := make([]float64, cluster)
+	for i := range pi {
+		pi[i] = 1.0 / float64(cluster)
+	}
+	mu := make([][]float64, cluster)
+	for i := 0; i < cluster; i++ {
+		mu[i] = make([]float64, len(em.data[0]))
+	}
+	sigma := make([]float64, cluster)
+	for i := range sigma {
+		sigma[i] = sig
+	}
+	em.mu = mu
+	em.sigma = sigma
+	em.k = cluster
+	em.w = w
 }
 
 func (em EM) muInitAsBiasedMean(biase float64) {
@@ -63,7 +86,6 @@ func (em EM) norm(x []float64, j int) float64 {
 	second := mat64.DenseCopyOf(first.T())
 	resultMat := mat64.NewDense(1, 1, nil)
 	resultMat.Mul(first, second)
-
 	var jisuu = 0.5 * float64(em.d)
 	return math.Exp(resultMat.At(0, 0)/(-2.0)/(em.sigma[j]*em.sigma[j])) / math.Pow(2*math.Pi*em.sigma[j]*em.sigma[j], jisuu)
 }
@@ -112,7 +134,8 @@ func (em EM) m() {
 	}
 }
 
-func (em EM) show() {
+//Show shows the result.
+func (em EM) Show() {
 	for i := range em.pi {
 		fmt.Println("pi", i, ": ", em.pi[i])
 		fmt.Println("mu", i, ": ", em.mu[i])
@@ -128,21 +151,26 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 	return
 }
 
-func (em EM) EmIter(times int, loglikelyhood float64) {
-	like := em.likelyhood()
+//EmIter culcurates EM algorithm.
+func (em EM) EmIter(times int, loglike float64, verbose bool) {
+	like := em.exactLikelyhood()
 	var i int
 	for i = 0; i < times; i++ {
 		em.e()
 		em.m()
-		em.Plot(i)
-		newlike := em.likelyhood()
-		if math.IsNaN(em.likelyhood()) { //|| math.Abs(newlike-like) < loglikelyhood {
+		if verbose {
+			em.Plot(i)
+		}
+		newlike := em.exactLikelyhood()
+		if math.IsNaN(newlike) || math.Abs(newlike-like) < loglike {
 			break
 		}
 		like = newlike
 	}
-	fmt.Println("iter: ", i, like)
-	em.show()
+	if verbose {
+		fmt.Println("iter: ", i, like)
+		em.Show()
+	}
 }
 
 func (em EM) likelyhood() (result float64) {
@@ -156,11 +184,15 @@ func (em EM) likelyhood() (result float64) {
 	return
 }
 
-/*
-func main() {
-	//mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
-	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
-	a := NewEM(1.0, 3, data)
-	a.emIter(5, 0.01)
+func (em EM) exactLikelyhood() (result float64) {
+	for k := 0; k < em.k; k++ {
+		sumW := 0.0
+		sumWnorm := 0.0
+		for n := 0; n < len(em.data); n++ {
+			sumW += em.w[n][k]
+			sumWnorm += em.w[n][k] * math.Log(em.norm(em.data[n], k))
+		}
+		result += sumW*math.Log(em.pi[k]) + sumWnorm
+	}
+	return
 }
-*/

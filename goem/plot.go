@@ -9,6 +9,7 @@ import (
 	"github.com/gonum/plot/vg"
 )
 
+// Plot plots only 2-dimensional cluster and points
 func (em EM) Plot(fileid int) {
 	p, err := plot.New()
 	if err != nil {
@@ -17,7 +18,7 @@ func (em EM) Plot(fileid int) {
 	p.Title.Text = "EM Algorithm Plot"
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
-	bs, err := plotter.NewBubbles(em.clusterTriples(), vg.Points(30), vg.Points(70))
+	bs, err := plotter.NewBubbles(em.clusterTriples(), vg.Points(30), vg.Points(80))
 	if err != nil {
 		panic(err)
 	}
