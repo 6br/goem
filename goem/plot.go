@@ -1,15 +1,15 @@
 package goem
 
 import (
-	"fmt"
 	"image/color"
+	"strconv"
 
 	"github.com/gonum/plot"
 	"github.com/gonum/plot/plotter"
 	"github.com/gonum/plot/vg"
 )
 
-func (em EM) Plot() {
+func (em EM) Plot(fileid int) {
 	p, err := plot.New()
 	if err != nil {
 		panic(err)
@@ -17,7 +17,7 @@ func (em EM) Plot() {
 	p.Title.Text = "EM Algorithm Plot"
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
-	bs, err := plotter.NewBubbles(em.clusterTriples(), vg.Points(40), vg.Points(50))
+	bs, err := plotter.NewBubbles(em.clusterTriples(), vg.Points(30), vg.Points(70))
 	if err != nil {
 		panic(err)
 	}
@@ -28,10 +28,11 @@ func (em EM) Plot() {
 	if err != nil {
 		panic(err)
 	}
-	bs.Color = color.Black //color.RGBA{R: 255, B: 255, A: 255}
+	ss.Color = color.Black
 	p.Add(ss)
 
-	if err := p.Save(10*vg.Inch, 10*vg.Inch, "bubble.png"); err != nil {
+	filename := "pic/" + strconv.Itoa(fileid) + ".png"
+	if err := p.Save(10*vg.Inch, 10*vg.Inch, filename); err != nil {
 		panic(err)
 	}
 }
@@ -51,7 +52,6 @@ func (em EM) clusterTriples() plotter.XYZs {
 		data[i].X = v[0]
 		data[i].Y = v[1]
 		data[i].Z = em.pi[i] * 10
-		fmt.Println(em.pi[i])
 	}
 
 	return data

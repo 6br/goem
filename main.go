@@ -28,10 +28,9 @@ func ioinput() (data [][]float64) {
 
 func main() {
 	//data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
-	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
-	a := goem.NewEM(10, 3, data)
-	a.EmIter(5, 0.01)
-	b := goem.NewEM(10, 2, ioinput())
+	//data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
+	//a := goem.NewEM(10, 3, data)
+	//a.EmIter(5, 0.01)
+	b := goem.NewEM(1, 4, ioinput())
 	b.EmIter(20, 0.00001)
-	b.Plot()
 }

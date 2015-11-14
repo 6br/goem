@@ -132,9 +132,9 @@ func (em EM) EmIter(times int, loglikelyhood float64) {
 	like := em.likelyhood()
 	var i int
 	for i = 0; i < times; i++ {
-		em.show()
 		em.e()
 		em.m()
+		em.Plot(i)
 		newlike := em.likelyhood()
 		if math.IsNaN(em.likelyhood()) { //|| math.Abs(newlike-like) < loglikelyhood {
 			break
@@ -142,7 +142,7 @@ func (em EM) EmIter(times int, loglikelyhood float64) {
 		like = newlike
 	}
 	fmt.Println("iter: ", i, like)
-
+	em.show()
 }
 
 func (em EM) likelyhood() (result float64) {
