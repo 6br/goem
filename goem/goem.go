@@ -36,7 +36,7 @@ func NewEM(sig float64, cluster int, data [][]float64) *EM {
 		sigma[i] = sig
 	}
 	EM := &EM{mu: mu, sigma: sigma, d: len(data[0]), k: cluster, data: data, pi: pi, w: w}
-	EM.muInitAsBiasedMean(0.1)
+	EM.muInitAsBiasedMean(1.0)
 	return EM
 }
 
@@ -102,7 +102,10 @@ func (em EM) m() {
 
 		biasedSigma := 0.0
 		for n := 0; n < len(em.data); n++ {
-			biasedSigma += em.w[n][k] * math.Pow(arraySubInnerProduct(em.data[n], em.mu[k]), 2)
+			for d, v := range em.data[n] {
+				biasedSigma += em.w[n][k] * math.Pow(v-em.mu[k][d], 2)
+			}
+			//biasedSigma += em.w[n][k] * arraySubInnerProduct(em.data[n], em.mu[k])
 		}
 		em.sigma[k] = math.Sqrt(biasedSigma / sumW[k] / float64(em.d))
 		em.pi[k] = sumW[k] / float64(len(em.data))
@@ -119,7 +122,6 @@ func (em EM) show() {
 }
 
 func arraySubInnerProduct(a []float64, b []float64) (result float64) {
-	result = 0
 	for i := range a {
 		result += (a[i] - b[i]) * (a[i] - b[i])
 	}
@@ -128,16 +130,19 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 
 func (em EM) EmIter(times int, loglikelyhood float64) {
 	like := em.likelyhood()
-	for i := 0; i < times; i++ {
+	var i int
+	for i = 0; i < times; i++ {
+		em.show()
 		em.e()
 		em.m()
 		newlike := em.likelyhood()
-		if math.IsNaN(em.likelyhood()) || math.Abs(newlike-like) < loglikelyhood {
+		if math.IsNaN(em.likelyhood()) { //|| math.Abs(newlike-like) < loglikelyhood {
 			break
 		}
 		like = newlike
 	}
-	em.show()
+	fmt.Println("iter: ", i, like)
+
 }
 
 func (em EM) likelyhood() (result float64) {
