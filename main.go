@@ -31,8 +31,8 @@ func main() {
 	//data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
 	//a := goem.NewEM(1, 3, data)
 	//a.EmIter(5, 0.01)
-	b := goem.NewEM(1, 3, ioinput(), 0.1)
-	//b.CrossEntropy(7, 5, 20, 1.0)
+	b := goem.NewEM(1, 3, ioinput(), 1.0)
+	b.CrossEntropy(7, 5, 20, 1.0)
 	b.EmIter(30, 0.01, true)
 	//b.Show()
 	//em := goem.NewOptimizedEM(1, 7, 5, 20, ioinput(), 0.1)
