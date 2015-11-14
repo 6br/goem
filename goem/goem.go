@@ -18,7 +18,7 @@ type EM struct {
 }
 
 //NewEM is initializer of struct EM.
-func NewEM(mu [][]float64, sigma float64, cluster int, data [][]float64) *EM {
+func NewEM(sigma float64, cluster int, data [][]float64) *EM {
 	w := make([][]float64, len(data))
 	for i := 0; i < len(data); i++ {
 		w[i] = make([]float64, cluster)
@@ -28,15 +28,27 @@ func NewEM(mu [][]float64, sigma float64, cluster int, data [][]float64) *EM {
 	for i := range pi {
 		pi[i] = 1.0 / float64(cluster)
 	}
-	EM := &EM{mu: mu, sigma: sigma, d: len(data), k: cluster, data: data, pi: pi, w: w}
+	mu := make([][]float64, cluster)
+	for i := 0; i < cluster; i++ {
+		mu[i] = make([]float64, len(data[0]))
+	}
+	EM := &EM{mu: mu, sigma: sigma, d: len(data[0]), k: cluster, data: data, pi: pi, w: w}
+	EM.muInitAsBiasedMean()
+	fmt.Println(EM.mu)
 	return EM
 }
 
 func (em EM) muInitAsBiasedMean() {
-	mu := make([][]float64, em.k)
+	//em.mu = make([][]float64, em.k)
 	for i := 0; i < em.k; i++ {
-		mu[i] = make([]float64, em.d)
+		em.mu[i] = em.data[i]
+		for d := 0; d < em.d; d++ {
+			em.mu[i][d] /= float64(em.k)
+		}
 	}
+
+	//em.mu = mu
+
 }
 
 func (em EM) norm(x []float64, j int) float64 {
@@ -102,10 +114,11 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 }
 
 func main() {
-	mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
+	//mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
 	x := []float64{1, 2}
-	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.2}}
-	a := NewEM(mu, 1.0, 3, data)
+	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
+	a := NewEM(1.0, 3, data)
+	fmt.Println(a.mu)
 	fmt.Println(a.norm(x, 0))
 	a.e()
 	a.m()
