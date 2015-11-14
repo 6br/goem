@@ -23,8 +23,11 @@ func NewEM(mu [][]float64, sigma float64, cluster int, data [][]float64) *EM {
 	for i := 0; i < len(data); i++ {
 		w[i] = make([]float64, cluster)
 	}
-	pi := []float64{0.3, 0.3, 0.3}
-	//pi := make([]float64, cluster) //stub.
+	//pi := []float64{0.3, 0.3, 0.3}
+	pi := make([]float64, cluster) //stub.
+	for i := range pi {
+		pi[i] = 1.0 / float64(cluster)
+	}
 	EM := &EM{mu: mu, sigma: sigma, d: len(data), k: cluster, data: data, pi: pi, w: w}
 	return EM
 }
@@ -73,17 +76,29 @@ func (em EM) m() {
 	for k := 0; k < em.k; k++ {
 		biasedMu := make([]float64, em.d)
 		for n := 0; n < len(em.data); n++ {
-			biasedMu += em.w[n][k] * em.data[n]
+			for d, v := range em.data[n] {
+				biasedMu[d] += em.w[n][k] * v
+			}
 		}
-		em.mu[k] = biasedMu / sumW[k]
+		for f, v := range biasedMu {
+			em.mu[k][f] = v / sumW[k]
+		}
 
 		biasedSigma := 0.0
 		for n := 0; n < len(em.data); n++ {
-			biasedSigma += em.w[n][k] * math.Pow(em.data[n]-em.mu[k], 2)
+			biasedSigma += em.w[n][k] * math.Pow(arraySubInnerProduct(em.data[n], em.mu[k]), 2)
 		}
 		em.sigma = biasedSigma / sumW[k]
 		em.pi[k] = sumW[k] / float64(len(em.data))
 	}
+}
+
+func arraySubInnerProduct(a []float64, b []float64) (result float64) {
+	result = 0
+	for i := range a {
+		result += (a[i] - b[i]) * (a[i] - b[i])
+	}
+	return
 }
 
 func main() {
@@ -93,4 +108,5 @@ func main() {
 	a := NewEM(mu, 1.0, 3, data)
 	fmt.Println(a.norm(x, 0))
 	a.e()
+	a.m()
 }
