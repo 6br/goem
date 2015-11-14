@@ -1,4 +1,4 @@
-package main
+package goem
 
 import (
 	"fmt"
@@ -126,7 +126,7 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 	return
 }
 
-func (em EM) emIter(times int, loglikelyhood float64) {
+func (em EM) EmIter(times int, loglikelyhood float64) {
 	like := em.likelyhood()
 	for i := 0; i < times; i++ {
 		em.e()
@@ -151,9 +151,11 @@ func (em EM) likelyhood() (result float64) {
 	return
 }
 
+/*
 func main() {
 	//mu := [][]float64{{0, 0}, {0, 0}, {0, 0}}
 	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
 	a := NewEM(1.0, 3, data)
 	a.emIter(5, 0.01)
 }
+*/

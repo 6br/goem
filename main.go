@@ -1,20 +1,11 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/gonum/matrix/mat64"
+	"github.com/6br/goem/goem"
 )
 
 func main() {
-	elemX := []float64{1, 2, 3, 4}
-	elemY := []float64{5, 6, 7, 8}
-	elemA := make([]float64, 4)
-
-	x := mat64.NewDense(2, 2, elemX)
-	y := mat64.NewDense(2, 2, elemY)
-	a := mat64.NewDense(2, 2, elemA)
-
-	a.Mul(x, y)
-	fmt.Println(x)
+	data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
+	a := goem.NewEM(1.0, 3, data)
+	a.EmIter(5, 0.01)
 }
