@@ -33,17 +33,17 @@ func NewEM(sigma float64, cluster int, data [][]float64) *EM {
 		mu[i] = make([]float64, len(data[0]))
 	}
 	EM := &EM{mu: mu, sigma: sigma, d: len(data[0]), k: cluster, data: data, pi: pi, w: w}
-	EM.muInitAsBiasedMean()
+	EM.muInitAsBiasedMean(0.1)
 	fmt.Println(EM.mu)
 	return EM
 }
 
-func (em EM) muInitAsBiasedMean() {
+func (em EM) muInitAsBiasedMean(biase int) {
 	//em.mu = make([][]float64, em.k)
 	for i := 0; i < em.k; i++ {
 		em.mu[i] = em.data[i]
 		for d := 0; d < em.d; d++ {
-			em.mu[i][d] /= float64(em.k)
+			em.mu[i][d] = em.mu[i][d] / float64(em.k) * float64(1.0+(i-em.k)*biase)
 		}
 	}
 
