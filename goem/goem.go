@@ -141,7 +141,7 @@ func (em EM) Show() {
 		fmt.Println("mu", i, ": ", em.mu[i])
 		fmt.Println("sigma", i, ": ", em.sigma[i])
 	}
-	fmt.Println("loglikelyhood: ", em.likelyhood())
+	fmt.Println("loglikelyhood: ", em.likelyhood(), " clusters: ", em.k)
 }
 
 func arraySubInnerProduct(a []float64, b []float64) (result float64) {
@@ -168,7 +168,7 @@ func (em EM) EmIter(times int, loglike float64, verbose bool) {
 		like = newlike
 	}
 	if verbose {
-		fmt.Println("iter: ", i, like)
+		fmt.Println("iter: ", i, "times")
 		em.Show()
 	}
 }
