@@ -24,24 +24,23 @@ func (em EM) Plot() {
 	bs.Color = color.RGBA{R: 255, B: 255, A: 255}
 	p.Add(bs)
 
-	bs, err = plotter.NewBubbles(em.dataTriples(), vg.Points(5), vg.Points(5))
+	ss, err := plotter.NewScatter(em.dataTriples())
 	if err != nil {
 		panic(err)
 	}
 	bs.Color = color.Black //color.RGBA{R: 255, B: 255, A: 255}
-	p.Add(bs)
+	p.Add(ss)
 
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, "bubble.png"); err != nil {
 		panic(err)
 	}
 }
 
-func (em EM) dataTriples() plotter.XYZs {
-	data := make(plotter.XYZs, len(em.data))
+func (em EM) dataTriples() plotter.XYs {
+	data := make(plotter.XYs, len(em.data))
 	for i, v := range em.data {
 		data[i].X = v[0]
 		data[i].Y = v[1]
-		data[i].Z = 0.1
 	}
 	return data
 }
