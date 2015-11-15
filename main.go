@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/6br/goem/goem"
 	"io"
+
+	"github.com/6br/goem/goem"
 )
 
 func ioinput() (data [][]float64) {

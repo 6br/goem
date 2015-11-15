@@ -2,8 +2,9 @@ package goem
 
 import (
 	"fmt"
-	"github.com/gonum/matrix/mat64"
 	"math"
+
+	"github.com/gonum/matrix/mat64"
 )
 
 //EM is EM-algorithm class.

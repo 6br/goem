@@ -21,6 +21,12 @@ Please use below if you want to know more.
 go run main.go --help
 ```
 
+# Plotted PNG convert to Animation GIF
+Use ImageMagick.
+```sh
+convert -delay 50 *.png animation.gif
+```
+
 # Install
 Please git clone.
 If you want to use as package, use go-get.

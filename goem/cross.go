@@ -44,7 +44,8 @@ func (em EM) crossEM(start int, end int) (trainData [][]float64, testData [][]fl
 	return
 }
 
-func (em EM) entropy(testData [][]float64) (entropy float64) {
+func (em EM) entropy(testData [][]float64) float64 {
+	entropy := 0.0
 	for _, v := range testData {
 		temp := 0.0
 		for k := 0; k < em.k; k++ {
