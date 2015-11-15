@@ -33,10 +33,13 @@ func main() {
 		partition    int
 		loglikely    float64
 		meanshift    float64
+		goroutine    bool
 	)
 	/* register flag name and shorthand name */
 	flag.BoolVar(&verbose, "verbose", true, "verbose option(show midstream and plot graph)")
 	flag.BoolVar(&verbose, "v", true, "verbose option(show midstream and plot graph)")
+	flag.BoolVar(&goroutine, "g", true, "use goroutine for optimize or not")
+	flag.BoolVar(&goroutine, "goroutne", true, "use goroutine for optimize or not")
 	flag.Float64Var(&sigma, "sigma", 1.0, "initial sample variance")
 	flag.Float64Var(&sigma, "s", 1.0, "initial sample variance")
 	flag.Float64Var(&meanshift, "meanshift", 1.0, "how many shift from mean of data when mu set")
@@ -61,7 +64,7 @@ func main() {
 	//b.CrossEntropy(7, 5, 20, 1.0)
 	//b.EmIter(iter, loglikely, verbose)
 	//b.Show()
-	em := goem.NewOptimizedEM(sigma, clustermax, partition, optimizeiter, ioinput(), meanshift)
+	em := goem.NewOptimizedEM(sigma, clustermax, partition, optimizeiter, ioinput(), meanshift, goroutine)
 	em.EmIter(iter, loglikely, verbose)
 	//fmt.Println(em.CrossEntropy(10, 5, 20)) // from 2 to 9, partition by 5.
 	//crossem := goem.NewEM(1, em.CrossEntropy(10, 5, 20), em.data)

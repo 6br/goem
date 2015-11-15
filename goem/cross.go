@@ -5,6 +5,12 @@ import (
 	"math"
 )
 
+//BinaryParams is needed to goroutine.
+type BinaryParams struct {
+	params int
+	score  float64
+}
+
 //CrossEntropy culculates best bluster number.
 func (em EM) CrossEntropy(end int, partition int, iter int, mean float64) (bestCluster int) {
 	bestEntropy := 0.0
@@ -26,11 +32,45 @@ func (em EM) CrossEntropy(end int, partition int, iter int, mean float64) (bestC
 	return
 }
 
+func (em EM) parallelCrossEntropy(end int, partition int, iter int, mean float64) int {
+	//Generate 0-1 array and each throw go-routine
+	ch := make(chan BinaryParams)
+	for i := end; i >= 2; i-- {
+		go em.eachCrossEntropy(end, partition, iter, mean, i, ch)
+	}
+	//Gather results and return most optimal solution
+	var scoremax BinaryParams
+	for i := 2; i < end; i++ {
+		params := <-ch
+		if params.score < scoremax.score {
+			scoremax = params
+		}
+	}
+	return scoremax.params
+}
+
+func (em EM) eachCrossEntropy(end int, partition int, iter int, mean float64, i int, ch chan BinaryParams) {
+	entropy := 0.0
+	for part := 0; part < partition; part++ {
+		trainData, testData := em.crossEM(part*len(em.data)/partition, (part+1)*len(em.data)/partition)
+		crossem := NewEM(1.0, i, trainData, mean)
+		crossem.EmIter(iter, 0.01, false) //緩めの条件で回す。
+		entropy += crossem.entropy(testData)
+	}
+	entropy /= float64(i)
+	fmt.Println("Clusters:", i, " Entropy: ", entropy)
+	ch <- BinaryParams{i, entropy}
+}
+
 //NewOptimizedEM generates EM object with optimized param by cross-entropy
-func NewOptimizedEM(sig float64, end int, partition int, iter int, data [][]float64, mean float64) *EM {
+func NewOptimizedEM(sig float64, end int, partition int, iter int, data [][]float64, mean float64, goroutine bool) *EM {
 	em := NewEM(sig, end, data, mean)
-	//em.recluster(em.CrossEntropy(end, partition, iter, mean), sig)
-	newem := NewEM(sig, em.CrossEntropy(end, partition, iter, mean), data[:], mean)
+	var newem *EM
+	if goroutine {
+		newem = NewEM(sig, em.parallelCrossEntropy(end, partition, iter, mean), data[:], mean)
+	} else {
+		newem = NewEM(sig, em.CrossEntropy(end, partition, iter, mean), data[:], mean)
+	}
 	return newem
 }
 
