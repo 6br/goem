@@ -56,16 +56,8 @@ func main() {
 	flag.IntVar(&partition, "partition", 5, "separate data for calculate cross-entropy")
 	flag.Parse()
 
-	//fmt.Println(data)
-	//data := [][]float64{{0.5, 0.2}, {0.4, 0.2}, {0.4, 0.3}, {0.3, 0.3}}
-	//a := goem.NewEM(1, 3, data)
-	//a.EmIter(iter, loglikely)
-	//b := goem.NewEM(sigma, 3, ioinput(), 1.0)
-	//b.CrossEntropy(7, 5, 20, 1.0)
-	//b.EmIter(iter, loglikely, verbose)
-	//b.Show()
 	em := goem.NewOptimizedEM(sigma, clustermax, partition, optimizeiter, ioinput(), meanshift, goroutine)
 	em.EmIter(iter, loglikely, verbose)
-	//fmt.Println(em.CrossEntropy(10, 5, 20)) // from 2 to 9, partition by 5.
-	//crossem := goem.NewEM(1, em.CrossEntropy(10, 5, 20), em.data)
+	fmt.Println("Result: ")
+	em.Show()
 }

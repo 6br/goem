@@ -166,6 +166,10 @@ func (em EM) EmIter(times int, loglike float64, verbose bool) {
 		if math.IsNaN(newlike) || math.Abs(newlike-like) < loglike {
 			break
 		}
+		if verbose {
+			fmt.Println("iter: ", i, "times")
+			em.Show()
+		}
 		like = newlike
 	}
 	if verbose {
