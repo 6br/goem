@@ -5,6 +5,14 @@ This package is an implementation of golang to use EM algorithm
 # Description
 EM-algorithm(expectation maximization) is a method for finding maximum likelihood estimates of hidden statistical parameters.
 
+# Environment
+* go version go1.4.2 linux/amd64
+
+Using library packages below.
+
+* github.com/gonum/matrix 
+* github.com/gonum/plot
+
 # Usage
 ```sh
 go run main.go -m=1.0 < space_separated.txt
@@ -29,6 +37,7 @@ convert -delay 50 *.png animation.gif
 
 # Install
 Please git clone.
+
 If you want to use as package, use go-get.
 ```sh
 go get github.com/6br/goem
