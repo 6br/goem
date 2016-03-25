@@ -13,7 +13,7 @@ type BinaryParams struct {
 
 //CrossEntropy culculates best bluster number.
 func (em EM) CrossEntropy(end int, partition int, iter int, mean float64) (bestCluster int) {
-	bestEntropy := 0.0
+	bestEntropy := math.MaxFloat64
 	for i := 2; i < end; i++ {
 		entropy := 0.0
 		for part := 0; part < partition; part++ {
@@ -40,6 +40,7 @@ func (em EM) parallelCrossEntropy(end int, partition int, iter int, mean float64
 	}
 	//Gather results and return most optimal solution
 	var scoremax BinaryParams
+	scoremax.score = math.MaxFloat64
 	for i := 2; i < end; i++ {
 		params := <-ch
 		if params.score < scoremax.score {
@@ -65,6 +66,9 @@ func (em EM) eachCrossEntropy(end int, partition int, iter int, mean float64, i 
 //NewOptimizedEM generates EM object with optimized param by cross-entropy
 func NewOptimizedEM(sig float64, end int, partition int, iter int, data [][]float64, mean float64, goroutine bool) *EM {
 	em := NewEM(sig, end, data, mean)
+	if end > len(data)/partition * (partition-1) {
+	  end = len(data)/partition * (partition-1)
+	}
 	var newem *EM
 	if goroutine {
 		newem = NewEM(sig, em.parallelCrossEntropy(end, partition, iter, mean), data[:], mean)

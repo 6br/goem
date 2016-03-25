@@ -54,7 +54,7 @@ go get github.com/6br/goem
 ```
 
 ## LICENSE
-Please see LICENSE.
+Please see LICENSE. 
 
 Using library packages below.
 
