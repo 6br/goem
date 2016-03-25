@@ -1,7 +1,5 @@
 goem - EM algorithm implementation for golang
 ===
-![animation gif](https://cloud.githubusercontent.com/assets/12047794/14041984/296de90a-f2b9-11e5-852d-a85dc021d6b1.gif)
-
 [![GoDoc](https://godoc.org/github.com/6br/goem/goem?status.svg)](https://godoc.org/github.com/6br/goem/goem)
 
 goem requires Go version 1.4.2 or greater
@@ -10,6 +8,8 @@ goem requires Go version 1.4.2 or greater
 This package is an implementation of golang to use EM algorithm
 
 EM-algorithm(expectation maximization) is a method for finding maximum likelihood estimates of hidden statistical parameters.
+
+![animation gif](https://cloud.githubusercontent.com/assets/12047794/14041984/296de90a-f2b9-11e5-852d-a85dc021d6b1.gif)
 
 # Usage
 ```sh
