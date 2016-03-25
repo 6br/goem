@@ -1,19 +1,13 @@
-goem -- EM algorithm implementation for golang
+goem - EM algorithm implementation for golang
 ===
-This package is an implementation of golang to use EM algorithm
+[![GoDoc](https://godoc.org/github.com/6br/goem/goem?status.svg)](https://godoc.org/github.com/6br/goem/goem)
+
+goem requires Go version 1.4.2 or greater
 
 # Description
+This package is an implementation of golang to use EM algorithm
+
 EM-algorithm(expectation maximization) is a method for finding maximum likelihood estimates of hidden statistical parameters.
-
-# Environment
-* go version go1.4.2 linux/amd64
-
-Using library packages below.
-
-* github.com/gonum/matrix 
-* github.com/gonum/plot
-
-(Copyright (R)2013 The gonum Authors. All rights reserved.)
 
 # Usage
 ```sh
@@ -31,16 +25,25 @@ Please use below if you want to know more.
 go run main.go --help
 ```
 
-# Plotted PNG convert to Animation GIF
+## Convert Plotted PNG to Animation GIF
 Use ImageMagick.
 ```sh
 convert -delay 50 *.png animation.gif
 ```
 
 # Install
-Please git clone.
+Please git clone. If you want to use as package, use go get.
 
-If you want to use as package, use go-get.
 ```sh
 go get github.com/6br/goem
 ```
+
+# LICENSE
+Please see LICENSE.
+
+Using library packages below.
+
+* github.com/gonum/matrix 
+* github.com/gonum/plot
+
+(Copyright (c)2013 The gonum Authors. All rights reserved.)
