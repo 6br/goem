@@ -13,6 +13,8 @@ Using library packages below.
 * github.com/gonum/matrix 
 * github.com/gonum/plot
 
+(Copyright (R)2013 The gonum Authors. All rights reserved.)
+
 # Usage
 ```sh
 go run main.go -m=1.0 < space_separated.txt
