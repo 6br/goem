@@ -1,6 +1,7 @@
 goem - EM algorithm implementation for golang
 ===
 [![GoDoc](https://godoc.org/github.com/6br/goem/goem?status.svg)](https://godoc.org/github.com/6br/goem/goem)
+[![Build Status](https://drone.io/github.com/6br/goem/status.png)](https://drone.io/github.com/6br/goem/latest)
 
 goem requires Go version 1.4.2 or greater
 
@@ -16,7 +17,7 @@ EM-algorithm(expectation maximization) is a method for finding maximum likelihoo
 go run main.go -m=1.0 < space_separated.txt
 ```
 
-Example of `space\_separted.txt` is below.
+Two-dimentional example data of `space\_separted.txt` is below.
 
 ```space_separated.txt
 0.471726116612005	0.266595928855752
@@ -33,7 +34,7 @@ Important options are below.
 * verbose(v bool): if it is true, graphs might be output in pic/ and show the result implicit.
 * meanshift(m float64): you have to try to search the suitable parameters to avoid getting localized solution.
 
-Please use below if you want to know more.
+Use the following command if you want to know more details of flags.
 
 ```sh
 go run main.go --help
@@ -46,7 +47,7 @@ convert -delay 50 *.png animation.gif
 ```
 
 ## Install
-Please git clone. If you want to use as package, use go get.
+Please git clone. If you want to use it as a package, use go get.
 
 ```sh
 go get github.com/6br/goem
