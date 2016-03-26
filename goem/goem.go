@@ -145,12 +145,14 @@ func (em EM) Show() {
 	fmt.Println("loglikelyhood: ", em.likelyhood(), " clusters: ", em.k)
 }
 
+/*
 func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 	for i := range a {
 		result += (a[i] - b[i]) * (a[i] - b[i])
 	}
 	return
 }
+*/
 
 //EmIter culcurates EM algorithm.
 func (em EM) EmIter(times int, loglike float64, verbose bool, directory string) {
