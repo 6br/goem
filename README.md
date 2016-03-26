@@ -14,7 +14,7 @@ EM-algorithm(expectation maximization) is a method for finding maximum likelihoo
 
 ## Usage of commandline
 ```sh
-go run main.go -m=1.0 < space_separated.txt
+go run main.go -m=1.0 -d=pic/ < space_separated.txt
 ```
 
 Two-dimentional example data of `space_separted.txt` is below.
@@ -33,6 +33,7 @@ Important options are below.
 
 * verbose(v bool): if it is true, graphs might be output in pic/ and show the result implicit.
 * meanshift(m float64): you have to try to search the suitable parameters to avoid getting localized solution.
+* directory(d string): where to save plotted images of EM-algorithm iteration.
 
 Use the following command if you want to know more details of flags.
 
