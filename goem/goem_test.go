@@ -22,7 +22,7 @@ func TestDescribe(t *testing.T) {
 			})
 		})
 		Context("and we calculate", func(){
-		  em.EmIter(20, 0, false, "")
+		  em.EmIter(40, 0, true, "")
 		  It("should be the correct mu", func(){
 			  fmt.Println(em.mu)
 			  for i := range em.mu {
