@@ -2,6 +2,7 @@ goem - EM algorithm implementation for golang
 ===
 [![GoDoc](https://godoc.org/github.com/6br/goem/goem?status.svg)](https://godoc.org/github.com/6br/goem/goem)
 [![Build Status](https://drone.io/github.com/6br/goem/status.png)](https://drone.io/github.com/6br/goem/latest)
+[![Coverage Status](https://coveralls.io/repos/github/6br/goem/badge.svg?branch=master)](https://coveralls.io/github/6br/goem?branch=master)
 
 goem requires Go version 1.4.2 or greater
 
