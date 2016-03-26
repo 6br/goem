@@ -34,6 +34,7 @@ func main() {
 		loglikely    float64
 		meanshift    float64
 		goroutine    bool
+		directory    string
 	)
 	/* register flag name and shorthand name */
 	flag.BoolVar(&verbose, "verbose", true, "verbose option(show midstream and plot graph)")
@@ -54,10 +55,12 @@ func main() {
 	flag.IntVar(&clustermax, "clustermax", 7, "max cluster size for optimizing parameter")
 	flag.IntVar(&partition, "p", 5, "separate data for calculate cross-entropy")
 	flag.IntVar(&partition, "partition", 5, "separate data for calculate cross-entropy")
+	flag.StringVar(&directory, "d", "", "path to the directory to save plotted images(ex: pic/)")
+	flag.StringVar(&directory, "directory", "", "path to the directory to save plotted images(ex: pic/)")
 	flag.Parse()
 
 	em := goem.NewOptimizedEM(sigma, clustermax, partition, optimizeiter, ioinput(), meanshift, goroutine)
-	em.EmIter(iter, loglikely, verbose)
+	em.EmIter(iter, loglikely, verbose, directory)
 	fmt.Println("Result: ")
 	em.Show()
 }

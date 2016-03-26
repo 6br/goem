@@ -10,7 +10,7 @@ import (
 )
 
 // Plot plots only 2-dimensional cluster and points
-func (em EM) Plot(fileid int) {
+func (em EM) Plot(fileid int, directory string) {
 	p, err := plot.New()
 	if err != nil {
 		panic(err)
@@ -32,7 +32,7 @@ func (em EM) Plot(fileid int) {
 	ss.Color = color.Black
 	p.Add(ss)
 
-	filename := "pic/" + strconv.Itoa(fileid) + ".png"
+	filename := directory + strconv.Itoa(fileid) + ".png"
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, filename); err != nil {
 		panic(err)
 	}

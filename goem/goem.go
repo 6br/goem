@@ -153,14 +153,14 @@ func arraySubInnerProduct(a []float64, b []float64) (result float64) {
 }
 
 //EmIter culcurates EM algorithm.
-func (em EM) EmIter(times int, loglike float64, verbose bool) {
+func (em EM) EmIter(times int, loglike float64, verbose bool, directory string) {
 	like := em.exactLikelyhood()
 	var i int
 	for i = 0; i < times; i++ {
 		em.e()
 		em.m()
-		if verbose {
-			em.Plot(i)
+		if directory != "" {
+			em.Plot(i, directory)
 		}
 		newlike := em.exactLikelyhood()
 		if math.IsNaN(newlike) || math.Abs(newlike-like) < loglike {

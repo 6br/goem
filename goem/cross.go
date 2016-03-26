@@ -19,7 +19,7 @@ func (em EM) CrossEntropy(end int, partition int, iter int, mean float64) (bestC
 		for part := 0; part < partition; part++ {
 			trainData, testData := em.crossEM(part*len(em.data)/partition, (part+1)*len(em.data)/partition)
 			crossem := NewEM(1.0, i, trainData, mean)
-			crossem.EmIter(iter, 0.01, false) //緩めの条件で回す。
+			crossem.EmIter(iter, 0.01, false,"") //緩めの条件で回す。
 			entropy += crossem.entropy(testData)
 		}
 		entropy /= float64(i)
@@ -55,7 +55,7 @@ func (em EM) eachCrossEntropy(end int, partition int, iter int, mean float64, i 
 	for part := 0; part < partition; part++ {
 		trainData, testData := em.crossEM(part*len(em.data)/partition, (part+1)*len(em.data)/partition)
 		crossem := NewEM(1.0, i, trainData, mean)
-		crossem.EmIter(iter, 0.01, false) //緩めの条件で回す。
+		crossem.EmIter(iter, 0.01, false,"") //loosen constraint.
 		entropy += crossem.entropy(testData)
 	}
 	entropy /= float64(i)
