@@ -22,7 +22,7 @@ func TestDescribe(t *testing.T) {
 			})
 		})
 		Context("and we calculate", func(){
-		  em.EmIter(40, 0, true, "pic/")
+		  em.EmIter(40, 0, true, "./")
 		  It("should be the correct mu", func(){
 			  for i := range em.mu {
 				  for j := range em.mu[0] {
