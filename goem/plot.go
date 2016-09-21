@@ -1,8 +1,8 @@
 package goem
 
 import (
+	"fmt"
 	"image/color"
-	"strconv"
 
 	"github.com/gonum/plot"
 	"github.com/gonum/plot/plotter"
@@ -32,7 +32,7 @@ func (em EM) Plot(fileid int, directory string) {
 	ss.Color = color.Black
 	p.Add(ss)
 
-	filename := directory + strconv.Itoa(fileid) + ".png"
+	filename := directory + fmt.Sprintf("%03d", fileid) + ".png"
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, filename); err != nil {
 		panic(err)
 	}
