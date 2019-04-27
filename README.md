@@ -18,7 +18,7 @@ EM-algorithm(expectation maximization) is a method for finding maximum likelihoo
 go run main.go -m=1.0 -d=pic/ < space_separated.txt
 ```
 
-Two-dimentional example data of `space_separted.txt` is below.
+Two-dimentional example data of `space_separated.txt` is below.
 
 ```space_separated.txt
 0.471726116612005	0.266595928855752
